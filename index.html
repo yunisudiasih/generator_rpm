@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Perencanaan Pembelajaran</title>
+    <!-- Memuat Tailwind CSS CDN --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Memuat Font Inter --><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Warna latar belakang yang lebih halus */
+        }
+        .card {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+             /* Efek hover minimalis untuk kesan profesional */
+        }
+        .input-field {
+            border: 1px solid #d1d5db;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        /* Style untuk Print (PDF) */
+        @media print {
+            .card, #result-container {
+                box-shadow: none !important;
+                border: none !important;
+            }
+            body {
+                background-color: white;
+            }
+            /* Sembunyikan form dan tombol cetak itu sendiri */
+            #plan-form, .no-print {
+                display: none !important;
+            }
+            #result-container {
+                display: block !important; /* Pastikan hasil ditampilkan saat dicetak */
+                margin-top: 0;
+                padding: 0;
+            }
+        }
+
+        /* Custom styles for bold header/footer */
+        .header-bg {
+            background-image: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3ed, #69bfed, #4dc9e7, #37d2cc, #4ee7a8, #9cf669); /* Gradien warna yang berani */
+            /* Anda bisa mencoba gradien lain seperti:
+            background-image: linear-gradient(to right top, #1a2a6c, #b21f1f, #fdbb2d);
+            background-image: linear-gradient(to right top, #00c6ff, #0072ff);
+            background-image: linear-gradient(to right top, #fc5c7d, #6a82fb);
+            */
+        }
+        .footer-bg {
+            background-color: #374151; /* Warna gelap yang elegan untuk footer */
+        }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-5xl mx-auto">
+        <!-- HEADER BARU --><header class="header-bg text-center py-8 md:py-12 mb-10 rounded-xl shadow-lg">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight drop-shadow-md">
+                GENERATOR PERENCANAAN PEMBELAJARAN
+            </h1>
+            <p class="text-sm md:text-base italic text-white mt-4 opacity-90">
+                Modifikasi oleh Yuni Sudiasih, S.Sos. M.Pd., (WA 0812-7952-0708) <br class="md:hidden"> - SMA Negeri 1 Tumijajar
+            </p>
+            <p class="text-base md:text-lg text-white mt-3 px-4 md:px-0 opacity-90 font-medium">
+                Alat bantu cepat penyusunan draf rencana pembelajaran (RPP/Modul Ajar).
+            </p>
+            <div class="mt-6">
+                <svg class="w-16 h-16 mx-auto text-white opacity-80" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-8-8a8 8 0 0115.352 3.882l-3.235-1.745a1 1 0 00-1.096 1.745l3.235 1.745A8 8 0 012 10zm11.757-3.243a1 1 0 10-1.514-1.314l-2.434 2.815a1 1 0 00.757 1.631l2.434-2.815z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+        </header>
+        <!-- AKHIR HEADER BARU --><!-- Form Input --><div class="card bg-white p-6 md:p-10 rounded-2xl space-y-8 shadow-xl">
+            <form id="plan-form">
+                
+                <!-- Bagian 1: Informasi Umum --><section class="border-b pb-8 border-gray-200">
+                    <h2 class="text-2xl font-bold text-indigo-800 mb-6">1. Informasi Umum</h2>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        
+                        <!-- Baris 1: Topik, Materi Pokok --><div class="lg:col-span-2">
+                            <label for="topik" class="block text-sm font-medium text-gray-700">Topik</label>
+                            <input type="text" id="topik" class="mt-1 block w-full input-field focus:border-indigo-600 focus:ring-indigo-600" placeholder="Contoh: Pemanasan Global" required>
+                        </div>
+                        <div class="lg:col-span-2">
+                            <label for="materi" class="block text-sm font-medium text-gray-700">Materi Pokok</label>
+                            <input type="text" id="materi" class="mt-1 block w-full input-field focus:border-indigo-600 focus:ring-indigo-600" placeholder="Contoh: Dampak dan Solusi" required>
+                        </div>
+
+                        <!-- Baris 2: Mapel, Jenjang, Kelas, Semester --><div class="lg:col-span-1 md:col-span-2">
+                            <label for="mapel" class="block text-sm font-medium text-gray-700">Mata Pelajaran</label>
+                            <input type="text" id="mapel" class="mt-1 block w-full input-field focus:border-indigo-600 focus:ring-indigo-600" placeholder="Contoh: Ilmu Pengetahuan Alam" required>
+                        </div>
+                        
+                        <!-- Jenjang (Dropdown) --><div>
+                            <label for="jenjang" class="block text-sm font-medium text-gray-700">Jenjang</label>
+                            <select id="jenjang" class="mt-1 block w-full input-field focus:border-indigo-600 focus:ring-indigo-600" required>
+                                <option value="" disabled selected>Pilih Jenjang</option>
+                                <option value="SLB">SLB</option>
+                                <option value="PAUD">PAUD</option>
+                                <option value="SD/MI">SD/MI</option>
+                                <option value="SMP/MTs">SMP/MTs</option>
+                                <option value="SMA/MA">SMA/MA</option>
+                                <option value="SMK">SMK</option>
+                            </select>
+                        </div>
+
+                        <!-- Kelas (Input Teks/Nomor) --><div>
+                            <label for="kelas" class="block text-sm font-medium text-gray-700">Kelas</label>
+                            <input type="text" id="kelas" class="mt-1 block w-full input-field focus:border-indigo-600 focus:ring-indigo-600" placeholder="Contoh: 10 atau 7" required>
+                        </div>
+
+                        <!-- Semester (Dropdown) --><div>
+                            <label for="semester" class="block text-sm font-medium text-gray-700">Semester</label>
+                            <select id="semester" class="mt-1 block w-full input-field focus:border-indigo-600 focus:ring-indigo-600" required>
+                                <option value="" disabled selected>Pilih Semester</option>
+                                <option value="Ganjil">Ganjil</option>
+                                <option value="Genap">Genap</option>
+                            </select>
+                        </div>
+
+                        <!-- Baris 3: Jumlah Pertemuan, Durasi --><div>
+                            <label for="jml_pertemuan" class="block text-sm font-medium text-gray-700">Jumlah Pertemuan</label>
+                            <input type="number" id="jml_pertemuan" min="1" class="mt-1 block w-full input-field focus:border-indigo-600 focus:ring-indigo-600" value="1" required>
+                        </div>
+                        <div class="lg:col-span-3">
+                            <label for="durasi" class="block text-sm font-medium text-gray-700">Durasi (Contoh: 2 x 45 menit)</label>
+                            <input type="text" id="durasi" class="mt-1 block w-full input-field focus:border-indigo-600 focus:ring-indigo-600" placeholder="Contoh: 2 x 45 menit" required>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bagian 2: Identifikasi & Desain Pembelajaran (Hanya Dimensi dan Tujuan) --><section class="mt-8 space-y-4">
+                    <h2 class="text-2xl font-bold text-indigo-800">2. Identifikasi & Desain Pembelajaran</h2>
+                    
+                    <!-- Dimensi Profil Lulusan (Checkbox) --><div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Dimensi Profil Lulusan yang Dikembangkan (Pilih ≥ 1)</label>
+                        <div id="dimensi_profil_checkboxes" class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2 text-sm">
+                            <!-- Checkbox options --><div class="flex items-center">
+                                <input type="checkbox" id="dimensi_iman" name="dimensi_profil" value="Keimanan dan ketakwaan kepada Tuhan YME" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <label for="dimensi_iman" class="ml-2 text-gray-700">Keimanan & Ketakwaan</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="dimensi_warga" name="dimensi_profil" value="Kewargaan" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <label for="dimensi_warga" class="ml-2 text-gray-700">Kewargaan</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="dimensi_kritis" name="dimensi_profil" value="Penalaran Kritis" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <label for="dimensi_kritis" class="ml-2 text-gray-700">Penalaran Kritis</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="dimensi_kreatif" name="dimensi_profil" value="Kreativitas" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <label for="dimensi_kreatif" class="ml-2 text-gray-700">Kreativitas</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="dimensi_kolaborasi" name="dimensi_profil" value="Kolaborasi" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <label for="dimensi_kolaborasi" class="ml-2 text-gray-700">Kolaborasi</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="dimensi_mandiri" name="dimensi_profil" value="Kemandirian" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <label for="dimensi_mandiri" class="ml-2 text-gray-700">Kemandirian</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="dimensi_sehat" name="dimensi_profil" value="Kesehatan" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <label for="dimensi_sehat" class="ml-2 text-gray-700">Kesehatan</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="dimensi_komunikasi" name="dimensi_profil" value="Komunikasi" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <label for="dimensi_komunikasi" class="ml-2 text-gray-700">Komunikasi</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Akhir Dimensi Profil Lulusan --><!-- Tujuan Pembelajaran --><div>
+                        <label for="tujuan_pembelajaran" class="block text-sm font-medium text-gray-700">Tujuan Pembelajaran (Kompetensi & Konten)</label>
+                        <textarea id="tujuan_pembelajaran" rows="2" class="mt-1 block w-full input-field focus:border-indigo-600 focus:ring-indigo-600" placeholder="Gunakan Kata Kerja Operasional (KKO) yang relevan, contoh: Menganalisis dampak pemanasan global terhadap ekosistem darat dan laut." required></textarea>
+                    </div>
+                </section>
+
+                <!-- Tombol Generator --><div class="mt-10">
+                    <button type="submit" id="generate-button" class="w-full bg-indigo-700 hover:bg-indigo-800 text-white font-bold py-4 px-4 rounded-xl transition duration-300 shadow-lg shadow-indigo-300 transform hover:scale-[1.01]">
+                        <span id="generate-button-text">Buat Perencanaan Pembelajaran</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Hasil Generator --><div id="result-container" class="mt-12 hidden">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 border-b-4 border-indigo-600 pb-2">DRAF PERENCANAAN PEMBELAJARAN DETAIL</h2>
+            <div id="plan-output" class="card bg-white p-6 md:p-10 rounded-2xl border border-gray-100 shadow-xl">
+                <!-- Isi hasil akan dimuat di sini oleh JavaScript --></div>
+            
+            <!-- FOOTER HASIL GENERATOR --><footer class="text-center mt-6 py-4 border-t border-gray-300">
+                <p class="text-sm text-gray-500 font-semibold">Modifikasi oleh Yuni Sudiasih, S.Sos. M.Pd., (WA 0812-7952-0708) - SMA Negeri 1 Tumijajar</p>
+            </footer>
+            <!-- AKHIR FOOTER HASIL GENERATOR --><!-- Tombol Unduh/Cetak (Non-Print) --><div class="no-print mt-4 flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4">
+                
+                <!-- Tombol Unduh Word (.doc) --><button id="download-word-btn" onclick="downloadWord()" class="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl transition duration-200 flex items-center justify-center">
+                    <!-- Ikon Word (Mengganti ikon) --><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 8a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1zm1 3a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                    </svg>
+                    Unduh Draf (Word .doc)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER BARU --><footer class="footer-bg text-center py-6 mt-12 rounded-xl shadow-lg">
+        <p class="text-sm text-gray-300 font-medium">
+            &copy; 2025 Generator Perencanaan Pembelajaran. Dibuat dengan &hearts; oleh AI.
+        </p>
+        <p class="text-xs text-gray-400 mt-1">
+            Modifikasi oleh Yuni Sudiasih, S.Sos. M.Pd., (WA 0812-7952-0708) - SMA Negeri 1 Tumijajar
+        </p>
+    </footer>
+    <!-- AKHIR FOOTER BARU --><script>
+        document.getElementById('plan-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            generatePlan();
+        });
+
+        // =======================================================================
+        // I. KONFIGURASI GEMINI API UNTUK GENERASI KONTEN
+        // =======================================================================
+        const apiKey = ""; // Canvas will inject this.
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        // JSON Schema untuk struktur 20 Soal
+        const QUESTIONS_SCHEMA = {
+            type: "ARRAY",
+            description: "List of 20 assessment questions and their answers.",
+            items: {
+                type: "OBJECT",
+                properties: {
+                    "question": { "type": "STRING", "description": "The assessment question." },
+                    "answer": { "type": "STRING", "description": "The concise and correct answer." }
+                },
+                propertyOrdering: ["question", "answer"]
+            }
+        };
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function fetchWithBackoff(url, options, retries = 3) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        if (response.status === 429 && i < retries - 1) {
+                            await delay(Math.pow(2, i) * 1000 + Math.random() * 1000); // Exponential backoff
+                            continue;
+                        }
+                        throw new Error(`API error: ${response.statusText}`);
+                    }
+                    return response.json();
+                } catch (error) {
+                    if (i === retries - 1) throw error;
+                    await delay(Math.pow(2, i) * 1000 + Math.random() * 1000);
+                }
+            }
+        }
+
+        /**
+         * Menghasilkan 20 soal sumatif dalam format JSON.
+         */
+        async function generateQuestions(topic, materi) {
+            const userQuery = `Buatkan 20 (dua puluh) soal asesmen sumatif beserta kunci jawabannya yang berfokus pada pemahaman konsep dan aplikasi, berdasarkan Topik: "${topic}" dan Materi Pokok: "${materi}". Berikan variasi bentuk soal (pilihan ganda, esai, atau kasus singkat).`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: QUESTIONS_SCHEMA,
+                    temperature: 0.5,
+                }
+            };
+
+            try {
+                const responseData = await fetchWithBackoff(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const jsonText = responseData.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (jsonText) {
+                    return JSON.parse(jsonText);
+                }
+                return [];
+            } catch (error) {
+                console.error("Error generating questions:", error);
+                return null; // Mengindikasikan kegagalan
+            }
+        }
+
+        /**
+         * Menghasilkan rangkuman materi berdasarkan tujuan pembelajaran (format teks/markdown).
+         */
+        async function generateSummary(tujuan) {
+            // ************ MODIFIKASI PROMPT UNTUK MENGHINDARI TABEL & DAFTAR BINTANG ************
+            const userQuery = `Buatkan rangkuman materi ajar yang sangat detail, komprehensif, dan mendalam (sekitar 400-500 kata) dalam format Markdown terstruktur (menggunakan sub-judul, dan tebal). JANGAN gunakan bentuk daftar (* list) atau tabel. Sajikan semua poin penting sebagai PARAGRAF UTUH dan JELAS. Teks harus berdasarkan Tujuan Pembelajaran berikut: "${tujuan}". Fokuskan pada konsep inti, penjelasan detail, contoh-contoh relevan, dan detail aplikasi, untuk menunjukkan pemahaman materi yang komprehensif. JANGAN sertakan tag gambar.`;
+            // ***********************************************************************************
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                generationConfig: {
+                    temperature: 0.4, // Sedikit dinaikkan untuk kreativitas dan detail
+                }
+            };
+
+            try {
+                const responseData = await fetchWithBackoff(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const text = responseData.candidates?.[0]?.content?.parts?.[0]?.text;
+                return text || '<p class="text-red-500 text-sm">Gagal menghasilkan rangkuman materi. (Model mengembalikan respons kosong)</p>';
+            } catch (error) {
+                console.error("Error generating summary:", error);
+                return null; // Signals failure
+            }
+        }
+
+        // =======================================================================
+        // II. NILAI DEFAULT DAN KONFIGURASI UMUM
+        // =======================================================================
+        const DEFAULT_PRACTIS_PEDOGOGIS = "Pembelajaran Berbasis Proyek (Project-Based Learning) - Model ini dipilih untuk meningkatkan relevansi materi dan kompetensi kolaborasi.";
+        const DEFAULT_KEMITRAAN = "Tidak ada kemitraan spesifik, namun ada kolaborasi antar kelompok siswa lintas keahlian (jika di SMK).";
+        const DEFAULT_LINGKUNGAN = "Menciptakan budaya belajar yang aman, menghargai perbedaan pendapat, dan fokus pada eksplorasi mandiri. Ruang fisik kelas disiapkan fleksibel (U-shape) untuk diskusi.";
+        const DEFAULT_DIGITAL = "Penggunaan video inspiratif dari platform edukasi, serta pemanfaatan tools kolaborasi daring (misalnya, Google Docs atau Padlet) untuk *brainstorming*.";
+        
+        const DEFAULT_FOKUS_MEMAHAMI = ['Bermakna'];
+        const DEFAULT_FOKUS_MENGAPLIKASIKAN = ['Berkesadaran'];
+        const DEFAULT_FOKUS_MEREFLEKSIKAN = ['Menggembirakan'];
+
+        const phaseColors = {
+            'Memahami': 'border-blue-600 bg-blue-50 text-blue-700',
+            'Mengaplikasikan': 'border-green-600 bg-green-50 text-green-700',
+            'Merefleksikan': 'border-yellow-600 bg-yellow-50 text-yellow-700',
+        };
+
+        // =======================================================================
+        // III. UTILITY DAN HELPER FUNCTIONS
+        // =======================================================================
+        
+        /**
+         * Konversi Markdown dasar ke HTML. Hanya mendukung bold dan list sederhana.
+         */
+        function markdownToHtml(markdown) {
+            if (!markdown) return '';
+            let html = markdown;
+
+            // Convert lists
+            // Find numbered list items
+            html = html.replace(/\n(\d+\. .*)/g, '\n<li>$1</li>');
+            // Find bullet list items (these should be avoided per new instruction, but kept for robustness)
+            html = html.replace(/\n(\* .*)/g, '\n<li>$1</li>');
+
+            // Wrap list items in <ul> or <ol> (imperfect, assumes contiguous lists)
+            html = html.replace(/(\n<li>\d+\. .*<\/li>)+/g, (match) => `<ol>${match.replace(/\d+\. /g, '')}</ol>`);
+            html = html.replace(/(\n<li>\* .*<\/li>)+/g, (match) => `<ul>${match.replace(/\* /g, '')}</ul>`);
+
+            // Headers (use strong for consistent styling in document context)
+            html = html.replace(/^(#+)\s*(.*)$/gm, (match, hashes, content) => {
+                return `<strong>${content.trim()}</strong><br>`;
+            });
+
+            // Bold (**text**)
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // Convert double newlines to paragraphs, handling pre-existing list tags
+            html = html.split('\n\n').map(p => {
+                // Keep pre-existing list tags, strong tags, or newlines inside paragraphs
+                if (p.startsWith('<ul') || p.startsWith('<ol') || p.startsWith('<strong>')) {
+                    return p;
+                }
+                // Handle raw text that might be interpreted as lists by the previous regexes but should be paragraph
+                let cleanP = p.trim();
+                if (cleanP) {
+                    return `<p>${cleanP}</p>`;
+                }
+                return '';
+            }).join('');
+            
+            // Final cleanup of redundant list wrappers and empty tags
+            html = html.replace(/<\/ul><br><ul>/g, '').replace(/<\/ol><br><ol>/g, '');
+            html = html.replace(/<p>\s*<\/p>/g, '');
+            html = html.replace(/<br><\/p>/g, '</p>');
+            
+            return `<div class="text-gray-700 space-y-2">${html}</div>`;
+        }
+
+
+        // --- Fungsi yang Sama Seperti Sebelumnya ---
+        function generateAsesmenDetail(type, topic, materi, questions = null) {
+            const topicClean = topic.trim() || 'Topik Pembelajaran';
+            const materiClean = materi.trim() || 'Materi Pokok';
+            
+            if (type === 'awal') {
+                return `
+                    <p><strong>Pelaksanaan:</strong> 
+                        <strong>A. Diagnostik Non-Kognitif:</strong> Survei singkat (misalnya melalui Google Form) mengenai minat, gaya belajar, dan kesiapan emosional siswa terkait ${topicClean}.<br>
+                        <strong>B. Diagnostik Kognitif:</strong> 5 pertanyaan *pre-test* berbentuk kuis cepat (lisan/tertulis) untuk mengukur pemahaman awal terhadap ${materiClean}.
+                    </p>
+                    <p class="mt-2 text-xs italic">Tujuan: Hasil digunakan untuk memetakan kebutuhan diferensiasi awal dan menyesuaikan tingkat kesulitan materi. Hasil kognitif mengukur pengetahuan prasyarat.</p>
+                `;
+            } else if (type === 'proses') {
+                return `
+                    <p><strong>Pelaksanaan:</strong> 
+                        <strong>A. Observasi:</strong> Mengamati interaksi kelompok saat diskusi atau proyek berlangsung, menggunakan ceklis observasi dimensi profil (Kolaborasi dan Penalaran Kritis).<br>
+                        <strong>B. Umpan Balik:</strong> Pemberian umpan balik spesifik dan konstruktif (feed-up, feed-back, feed-forward) pada draf tugas mingguan siswa.<br>
+                        <strong>C. Penilaian Diri:</strong> Jurnal refleksi singkat di akhir setiap pertemuan untuk melatih metakognisi.
+                    </p>
+                    <p class="mt-2 text-xs italic">Tujuan: Memantau kemajuan, mengidentifikasi miskonsepsi secara dini, dan memberikan dukungan belajar secara berkelanjutan (formative loop).</p>
+                `;
+            } else if (type === 'sumatif') {
+                let questionListHtml = '';
+                if (questions && questions.length > 0) {
+                    questionListHtml = `
+                        <h5 class="font-bold text-base text-indigo-700 mt-5 mb-2 border-t pt-3">DRAFT 20 SOAL UJI SUMATIF</h5>
+                        <ol class="list-decimal list-inside space-y-3 pl-2 text-sm">
+                            ${questions.map((q, index) => `
+                                <li class="font-medium text-gray-800">
+                                    ${q.question}
+                                    <p class="text-xs text-green-700 italic mt-1 ml-4">Kunci Jawaban: ${q.answer}</p>
+                                </li>
+                            `).join('')}
+                        </ol>
+                    `;
+                } else if (questions === null) {
+                    questionListHtml = `<p class="text-red-500 text-sm mt-4">Gagal menghasilkan soal karena masalah API. Silakan cek koneksi atau coba lagi nanti.</p>`;
+                } else {
+                    questionListHtml = `<p class="text-sm mt-4 italic">Soal sedang dibuat...</p>`;
+                }
+
+                return `
+                    <p><strong>Pelaksanaan:</strong> 
+                        <strong>A. Projek Akhir:</strong> Presentasi dan Laporan tertulis mengenai solusi terhadap ${topicClean}, dinilai menggunakan rubrik (mengukur kompetensi, konten, dan dimensi kreativitas).<br>
+                        <strong>B. Tes Tertulis (Wajib):</strong> 20 soal (termasuk esai/studi kasus) untuk mengukur pemahaman konseptual yang mendalam tentang ${materiClean}.
+                    </p>
+                    <p class="mt-2 text-xs italic">Tujuan: Mengukur pencapaian tujuan pembelajaran secara keseluruhan dan memberikan nilai akhir unit. Asesmen ini menuntut integrasi pengetahuan dan keterampilan.</p>
+                    ${questionListHtml}
+                `;
+            }
+        }
+
+        function generateTahapanDetail(phase, focus, materi) {
+            let steps = [];
+            let strategyDetail = "";
+            let toolsDetail = "";
+            const materialPlaceholder = `konsep ${materi.toLowerCase().trim() || 'materi pokok'}`;
+
+            if (phase === 'Memahami') {
+                if (focus === 'Berkesadaran') {
+                    strategyDetail = "Strategi: *Mindfulness* & Refleksi Awal. Teknik: Jurnal Metakognitif. Taktik: Diskusi Terpimpin.";
+                    toolsDetail = "Jurnal Reflektif, Alat Tulis, Sumber Bacaan Digital, Timer/Aplikasi Meditasi.";
+                    steps = [
+                        `Aktivitas Pembuka: Guru memimpin latihan kesadaran (mindfulness) singkat (2 menit) untuk memfokuskan emosi dan perhatian siswa sebelum mempelajari ${materialPlaceholder}.`,
+                        `Eksplorasi Mandiri: Siswa secara mandiri meninjau sumber belajar tentang ${materialPlaceholder} dan mencatat pertanyaan yang muncul.`,
+                        `Refleksi Metakognitif Awal: Siswa menuliskan prediksi atau asumsi awal mereka terkait ${materialPlaceholder} dan mencatat strategi belajar yang akan mereka gunakan.`
+                    ];
+                } else if (focus === 'Bermakna') {
+                    strategyDetail = "Strategi: *Contextual Teaching and Learning* (CTL). Teknik: Analisis Kasus & Koneksi. Taktik: Diskusi Kelompok Otentik.";
+                    toolsDetail = "Proyektor, Akses Internet, Studi Kasus Nyata (artikel/video), Papan Tulis Interaktif.";
+                    steps = [
+                        `Koneksi Dunia Nyata: Guru mempresentasikan studi kasus atau masalah otentik terkait ${materialPlaceholder} di lingkungan sekitar atau berita terkini.`,
+                        `Diskusi Kritis: Siswa berdiskusi untuk menghubungkan ${materialPlaceholder} dengan pengetahuan yang sudah mereka miliki (prior knowledge activation).`,
+                        `Merumuskan Relevansi: Siswa merumuskan kembali definisi atau konsep kunci ${materialPlaceholder} dengan bahasa mereka sendiri, memastikan relevansi personal dan sosial.`
+                    ];
+                } else if (focus === 'Menggembirakan') {
+                    strategyDetail = "Strategi: Gamifikasi (*Gamification*). Teknik: Kuis Interaktif & Eksperimen Singkat. Taktik: Kompetisi Cepat Berhadiah Kecil.";
+                    toolsDetail = "Aplikasi Kuis (Kahoot/Quizizz), Bahan/Kit Eksperimen Sederhana, Bola (untuk 'Lempar Bola Pertanyaan').";
+                    steps = [
+                        `Ice Breaking Interaktif: Menggunakan kuis berbasis gamifikasi (e.g., kuis singkat digital) untuk memperkenalkan istilah kunci dalam ${materialPlaceholder} dengan suasana kompetitif yang sehat.`,
+                        `Eksperimen/Demonstrasi Singkat: Siswa melakukan demonstrasi/eksperimen kecil yang memicu rasa ingin tahu terkait ${materialPlaceholder}.`,
+                        `Sesi Tanya Jawab Cepat: Membuat sesi Q&A yang ringan dan interaktif ('Lempar Bola Pertanyaan') untuk mendorong partisipasi aktif dan suasana kelas yang positif.`
+                    ];
+                }
+            } else if (phase === 'Mengaplikasikan') {
+                if (focus === 'Berkesadaran') {
+                    strategyDetail = "Strategi: *Scaffolding* Metakognitif & Regulasi Diri. Teknik: Pemantauan Diri (*Self-Monitoring*). Taktik: Sesi *Coaching* Singkat per Kelompok.";
+                    toolsDetail = "Rubrik Pemantauan Diri, Daftar Cek Progres Proyek, Lembar Kerja Berstruktur, Media Proyek (sesuai kebutuhan).";
+                    steps = [
+                        `Aplikasi Terkontrol: Siswa menerapkan ${materialPlaceholder} dalam tugas atau proyek (sesuai Praktis Pedagogis yang dipilih) sambil dipandu untuk memantau tingkat fokus dan kemajuan kerja mereka (self-monitoring).`,
+                        `Jurnal Reflektif Aplikasi: Siswa mencatat tantangan kognitif atau emosional yang dihadapi selama aplikasi dan bagaimana mereka mengatasi hambatan tersebut secara sadar.`,
+                        `Umpan Balik Bertahap: Guru melakukan *coaching* singkat per kelompok, fokus pada proses pengambilan keputusan siswa dan pengembangan keterampilan mengatasi masalah.`
+                    ];
+                } else if (focus === 'Bermakna') {
+                    strategyDetail = "Strategi: *Project-Based Learning* (PBL) Otentik. Teknik: Desain Solusi & Analisis Dampak. Taktik: Presentasi dan Sesi Kritis.";
+                    toolsDetail = "Komputer/Laptop, Bahan Baku Proyek (spesifik), Perangkat Lunak Desain (jika perlu), Template Laporan Proyek.";
+                    steps = [
+                        `Proyek Solusi Otentik: Siswa bekerja dalam kelompok untuk merancang solusi praktis terhadap masalah nyata menggunakan ${materialPlaceholder}, menghasilkan produk yang memiliki dampak.`,
+                        `Presentasi Kontekstual: Siswa mempresentasikan hasil aplikasi mereka kepada audiens, dengan penekanan pada bagaimana solusi tersebut menyelesaikan masalah di konteks yang relevan.`,
+                        `Analisis Kasus Lintas Bidang: Siswa menganalisis bagaimana ${materialPlaceholder} dapat diaplikasikan dan diintegrasikan dengan mata pelajaran atau bidang lain, memperluas pemahaman kontekstual.`
+                    ];
+                } else if (focus === 'Menggembirakan') {
+                    strategyDetail = "Strategi: Belajar Melalui Permainan (*Game-Based Learning*). Teknik: Simulasi Berperan & Kompetisi. Taktik: Penciptaan Media Kreatif.";
+                    toolsDetail = "Kartu Peran/Skenario, Papan Skor, Alat Rekam (HP/Kamera) untuk kreasi media, Materi Proyek Dasar.";
+                    steps = [
+                        `Simulasi Berperan Kreatif: Mengadakan simulasi atau role-playing yang melibatkan skenario imajinatif atau menantang di mana siswa harus menggunakan ${materialPlaceholder}.`,
+                        `Kompetisi Konstruktif: Mengadakan tantangan/mini-kompetisi (misalnya, membuat model terbaik, tantangan desain) yang mendorong aplikasi materi dalam suasana yang seru.`,
+                        `Kreasi Media Digital: Siswa membuat konten digital (video/podcast/infografis) yang menyenangkan dan informatif tentang ${materialPlaceholder} untuk dibagikan ke platform kelas.`
+                    ];
+                }
+            } else if (phase === 'Merefleksikan') {
+                if (focus === 'Berkesadaran') {
+                    strategyDetail = "Strategi: Refleksi Mendalam. Teknik: Jurnal Reflektif & Penentuan Tujuan. Taktik: Sesi Berbagi Pengalaman.";
+                    toolsDetail = "Formulir Kuesioner Refleksi Mendalam, Lembar Kerja *SMART Goals*, Alat Tulis.";
+                    steps = [
+                        `Refleksi Diri Mendalam (Tulis): Siswa mengisi kuesioner refleksi mendalam mengenai perasaan, usaha, dan pertumbuhan kognitif-emosional mereka selama unit ini.`,
+                        `Goal Setting Lanjutan: Siswa menetapkan tujuan belajar pribadi yang baru dan spesifik (SMART goals) berdasarkan area kelemahan dan kekuatan yang teridentifikasi.`,
+                        `Berbagi Rasa: Sesi berbagi di mana siswa menceritakan momen 'Aha!' atau kesulitan terbesar yang mereka alami selama pembelajaran (sharing circle).`
+                    ];
+                } else if (focus === 'Bermakna') {
+                    strategyDetail = "Strategi: Evaluasi Kritis Dampak. Teknik: Diskusi Etika & Portofolio. Taktik: Penulisan Esai Argumentatif.";
+                    toolsDetail = "Materi Diskusi Etika/Moral, Panduan Portofolio, Rubrik Penilaian Esai, Sumber Referensi Eksternal.";
+                    steps = [
+                        `Evaluasi Dampak: Siswa mengevaluasi dampak jangka pendek dan panjang dari solusi atau proyek yang mereka buat terhadap komunitas atau isu global.`,
+                        `Diskusi Etika/Moral: Mengadakan diskusi kelompok kecil tentang implikasi etis, sosial, atau keberlanjutan dari ${materialPlaceholder}.`,
+                        `Portofolio Makna: Siswa memilih karya terbaik mereka dan menulis esai/narasi singkat tentang mengapa karya tersebut memiliki makna (meaningful) bagi proses belajar mereka dan masa depan.`
+                    ];
+                } else if (focus === 'Menggembirakan') {
+                    strategyDetail = "Strategi: Apresiasi & Perayaan. Teknik: Galeri Berjalan (*Gallery Walk*). Taktik: Survei Kepuasan Belajar.";
+                    toolsDetail = "Stiker/Kartu Apresiasi, Musik Latar, Formulir Survei Kepuasan, Alat untuk Pesta Komitmen.";
+                    steps = [
+                        `Galeri Karya & Apresiasi: Mengadakan pameran mini atau panggung apresiasi di kelas untuk merayakan hasil kerja semua siswa dengan musik atau dekorasi ringan.`,
+                        `Survei Kepuasan Belajar: Siswa memberikan penilaian anonim terhadap kegiatan pembelajaran dan tingkat kesenangan mereka (misalnya, menggunakan stiker emoji).`,
+                        `Pesta Komitmen: Melakukan aktivitas penutup yang ringan dan meriah (misalnya, membuat 'kapsul waktu' komitmen belajar) untuk mengakhiri unit dengan semangat positif.`
+                    ];
+                }
+            }
+            
+            const stepsHTML = steps.map(step => `<li class="text-sm text-gray-700 leading-relaxed">${step}</li>`).join('');
+
+            return { stepsHTML, strategyDetail, toolsDetail };
+        }
+        
+        function generatePhaseSection(phase, focusObject, subtitle = '') {
+            const { stepsHTML, strategyDetail, toolsDetail } = focusObject;
+            const focusString = DEFAULT_FOKUS_MEMAHAMI.join(', '); // Karena fokus sekarang hardcoded
+            if (!stepsHTML.trim()) return ''; 
+            
+            const colors = phaseColors[phase];
+            return `
+                <div class="border-l-4 ${colors.split(' ')[0]} pl-3 py-3 mt-4 ${colors.split(' ')[1]} rounded-lg">
+                    <p class="font-bold text-base ${colors.split(' ')[2]}">${phase} ${subtitle ? `(${subtitle})` : ''}</p>
+                    <p class="text-sm italic text-gray-600 mb-2">Fokus Terpilih: ${focusString}</p>
+                    <ul class="list-decimal list-outside space-y-1 ml-4 pt-1">
+                        ${stepsHTML}
+                    </ul>
+                    
+                    <div class="mt-4 pt-2 border-t border-gray-300">
+                        <p class="text-sm"><strong>Strategi/Teknik/Taktik:</strong> ${strategyDetail}</p>
+                        <p class="text-sm mt-1"><strong>Alat & Bahan:</strong> ${toolsDetail}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // =======================================================================
+        // IV. GENERATE FULL HTML OUTPUT
+        // =======================================================================
+        function generateFullOutputHTML(data, calculatedTimeString, meetingBreakdownHTML, displayDimensi, asesmenAwalDetail, asesmenProsesDetail, asesmenSumatifDetail, summaryHTML) {
+             return `
+                <div class="space-y-8">
+                    <!-- Bagian A: Informasi Umum --><div class="p-6 bg-indigo-50 rounded-xl border border-indigo-200">
+                        <h3 class="font-bold text-xl text-indigo-700 mb-3">A. INFORMASI UMUM</h3>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 text-base gap-3 text-gray-700">
+                            <p><strong>Jenjang:</strong> ${data.jenjang}</p>
+                            <p><strong>Kelas:</strong> ${data.kelas}</p>
+                            <p><strong>Semester:</strong> ${data.semester}</p>
+                            
+                            <p><strong>Topik:</strong> ${data.topik}</p>
+                            <p><strong>Mata Pelajaran:</strong> ${data.mapel}</p>
+                            <p><strong>Materi Pokok:</strong> ${data.materi}</p>
+                            
+                            <!-- Detail Durasi Waktu --><p><strong>Jumlah Pertemuan:</strong> <span class="font-semibold">${data.jml_pertemuan}</span></p>
+                            <p><strong>Durasi per Pertemuan:</strong> <span class="font-semibold">${data.durasi}</span></p>
+                            <p><strong>Total Alokasi Waktu:</strong> ${calculatedTimeString}</p>
+                            <!-- Akhir Detail Durasi Waktu --></div>
+                    </div>
+
+                    <!-- Bagian B: Identifikasi & Desain Pembelajaran --><div>
+                        <h3 class="font-bold text-xl text-indigo-700 mb-3 border-b border-indigo-200 pb-1">B. IDENTIFIKASI & DESAIN PEMBELAJARAN</h3>
+                        <ul class="text-gray-700 space-y-2 text-base ml-4 list-disc list-outside">
+                            <li><strong>Dimensi Profil Lulusan:</strong> <span class="font-semibold text-indigo-600">${displayDimensi}</span></li>
+                            <li><strong>Tujuan Pembelajaran:</strong> ${data.tujuan_pembelajaran}</li>
+                            <li><strong>Praktis Pedagogis:</strong> ${data.praktis_pedogogis}</li>
+                            <li><strong>Kemitraan Pembelajaran:</strong> ${data.kemitraan}</li>
+                            <li><strong>Lingkungan Pembelajaran:</strong> ${data.lingkungan}</li>
+                            <li><strong>Pemanfaatan Digital:</strong> ${data.digital}</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Bagian B.1: RANGKUMAN MATERI (NEW SECTION) --><div class="border-t pt-6 border-gray-200">
+                        <h3 class="font-bold text-xl text-indigo-700 mb-3 border-b border-indigo-200 pb-1">B.1 RANGKUMAN MATERI (Hasil Generasi AI)</h3>
+                        <div class="text-gray-700">
+                            ${summaryHTML}
+                        </div>
+                    </div>
+
+                    <!-- Bagian C: TAHAPAN PEMBELAJARAN (PER TEMUAN) --><div>
+                        <h3 class="font-bold text-xl text-indigo-700 mb-3 border-b border-indigo-200 pb-1">C. TAHAPAN PEMBELAJARAN (Rincian per Pertemuan)</h3>
+                        ${meetingBreakdownHTML}
+                    </div>
+
+                    <!-- Bagian D: ASESMEN PEMBELAJAN (Detail Pelaksanaan) --><div>
+                        <h3 class="font-bold text-xl text-indigo-700 mb-3 border-b border-indigo-200 pb-1">D. ASESMEN PEMBELAJARAN (Detail Pelaksanaan)</h3>
+                        
+                        <div class="space-y-4 mt-4 text-base text-gray-700">
+                            <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                                <p class="font-semibold text-red-700 mb-1">1. Asesmen Formatif Awal (Diagnostik)</p>
+                                ${asesmenAwalDetail}
+                            </div>
+                            <div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                                <p class="font-semibold text-purple-700 mb-1">2. Asesmen Formatif Proses</p>
+                                ${asesmenProsesDetail}
+                            </div>
+                            <div id="sumatif-section" class="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                                <p class="font-semibold text-orange-700 mb-1">3. Asesmen Sumatif</p>
+                                ${asesmenSumatifDetail}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // =======================================================================
+        // V. FUNGSI UTAMA GENERATEPLAN (ASYNC)
+        // =======================================================================
+        async function generatePlan() {
+            document.getElementById('generate-button').disabled = true;
+            document.getElementById('generate-button-text').innerHTML = '<svg class="animate-spin h-5 w-5 mr-3 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Membuat Rangkuman & Soal...';
+            
+            // 1. Ambil Semua Nilai Input
+            const data = {
+                // Informasi Umum
+                topik: document.getElementById('topik').value,
+                mapel: document.getElementById('mapel').value,
+                materi: document.getElementById('materi').value,
+                jenjang: document.getElementById('jenjang').value,
+                kelas: document.getElementById('kelas').value,
+                semester: document.getElementById('semester').value,
+                jml_pertemuan: document.getElementById('jml_pertemuan').value,
+                durasi: document.getElementById('durasi').value,
+                
+                // Identifikasi & Desain (Hanya yang dipertahankan)
+                dimensi_profil: Array.from(document.querySelectorAll('input[name="dimensi_profil"]:checked'))
+                                    .map(cb => cb.value)
+                                    .join(', '),
+                tujuan_pembelajaran: document.getElementById('tujuan_pembelajaran').value,
+                
+                // Nilai Hardcoded/Default untuk Output
+                praktis_pedogogis: DEFAULT_PRACTIS_PEDOGOGIS,
+                kemitraan: DEFAULT_KEMITRAAN,
+                lingkungan: DEFAULT_LINGKUNGAN,
+                digital: DEFAULT_DIGITAL,
+                
+                fokus_memahami: DEFAULT_FOKUS_MEMAHAMI,
+                fokus_mengaplikasikan: DEFAULT_FOKUS_MENGAPLIKASIKAN,
+                fokus_merefleksikan: DEFAULT_FOKUS_MEREFLEKSIKAN,
+            };
+
+            const materiDetail = data.materi.trim() || 'Materi Pembelajaran'; 
+            
+            // --- Logika Durasi & Tahapan Pembelajaran (A & C) ---
+            const totalMeetings = parseInt(data.jml_pertemuan);
+            const durationText = data.durasi.toLowerCase().replace(/\s/g, ''); 
+            let timeString = 'Tidak Terdefinisi'; 
+            const match = durationText.match(/(\d+)x(\d+)menit/);
+            if (match) {
+                const numSessions = parseInt(match[1]);
+                const durationPerSession = parseInt(match[2]);
+                const totalMinutes = totalMeetings * numSessions * durationPerSession;
+                const hours = Math.floor(totalMinutes / 60);
+                const minutes = totalMinutes % 60;
+                timeString = ''; 
+                if (hours > 0) timeString += `${hours} jam `;
+                if (minutes > 0 || hours === 0) timeString += `${minutes} menit`;
+                timeString = `<span class="font-semibold text-indigo-700">${timeString.trim()}</span>`; 
+            } else {
+                 timeString = `<span class="font-semibold text-red-500">Hitungan tidak tersedia (Format durasi harus XxY menit)</span>`;
+            }
+            const calculatedTimeString = timeString;
+
+            const tahapMemahamiObj = generateTahapanDetail('Memahami', data.fokus_memahami[0], materiDetail);
+            const tahapMengaplikasikanObj = generateTahapanDetail('Mengaplikasikan', data.fokus_mengaplikasikan[0], materiDetail);
+            const tahapMerefleksikanObj = generateTahapanDetail('Merefleksikan', data.fokus_merefleksikan[0], materiDetail);
+            
+            let meetingBreakdownHTML = '';
+            for (let i = 1; i <= totalMeetings; i++) {
+                let meetingContent = '';
+                let meetingPhaseNotes = [];
+                if (totalMeetings === 1) {
+                    meetingContent += generatePhaseSection('Memahami', tahapMemahamiObj);
+                    meetingContent += generatePhaseSection('Mengaplikasikan', tahapMengaplikasikanObj);
+                    meetingContent += generatePhaseSection('Merefleksikan', tahapMerefleksikanObj);
+                    meetingPhaseNotes.push('Memahami (Lengkap), Mengaplikasikan, dan Merefleksikan');
+                } else if (i === 1) {
+                    meetingContent += generatePhaseSection('Memahami', tahapMemahamiObj, 'Fokus Utama');
+                    const awalAplikasiObj = {
+                        stepsHTML: tahapMengaplikasikanObj.stepsHTML.split('</li>').slice(0, 3).join('</li>') + '</li>',
+                        strategyDetail: tahapMengaplikasikanObj.strategyDetail,
+                        toolsDetail: "Sebagian Alat dan Bahan Aplikasi (Misalnya: Alat *Brainstorming*, Perencanaan Proyek)."
+                    };
+                    meetingContent += generatePhaseSection('Mengaplikasikan', awalAplikasiObj, 'Awal/Perencanaan');
+                    meetingPhaseNotes.push('Fase Memahami dan Awal Mengaplikasikan');
+                } else if (i > 1 && i < totalMeetings) {
+                    meetingContent += generatePhaseSection('Mengaplikasikan', tahapMengaplikasikanObj, 'Inti Kegiatan/Proyek');
+                    meetingPhaseNotes.push('Fase Inti Mengaplikasikan');
+                } else if (i === totalMeetings && totalMeetings > 1) {
+                    const akhirAplikasiObj = {
+                        stepsHTML: tahapMengaplikasikanObj.stepsHTML.split('</li>').slice(-4).join('</li>'),
+                        strategyDetail: tahapMengaplikasikanObj.strategyDetail,
+                        toolsDetail: "Sisa Alat dan Bahan Aplikasi (Misalnya: Perangkat Presentasi, Materi Laporan Akhir)."
+                    };
+                    meetingContent += generatePhaseSection('Mengaplikasikan', akhirAplikasiObj, 'Penyelesaian/Presentasi');
+                    meetingContent += generatePhaseSection('Merefleksikan', tahapMerefleksikanObj, 'Fokus Utama');
+                    meetingPhaseNotes.push('Penyelesaian Mengaplikasikan dan Fase Merefleksikan');
+                }
+                meetingBreakdownHTML += `
+                    <div class="mt-6 p-4 border-2 border-indigo-300 rounded-xl bg-indigo-50">
+                        <h4 class="font-extrabold text-xl text-indigo-800 mb-2">Pertemuan ${i}</h4>
+                        <p class="text-sm italic text-gray-600 mb-4">Fokus Kegiatan: ${meetingPhaseNotes.join(', ')} | Alokasi Waktu: <span class="font-bold">${data.durasi}</span>.</p>
+                        ${meetingContent}
+                    </div>
+                `;
+            }
+            // ----------------------------------------
+
+            // --- Logika Asesmen (D) dan Loading States ---
+            const displayDimensi = data.dimensi_profil || 'Tidak ada dimensi spesifik yang dipilih.';
+            const asesmenAwalDetail = generateAsesmenDetail('awal', data.topik, data.materi);
+            const asesmenProsesDetail = generateAsesmenDetail('proses', data.topik, data.materi);
+
+            // Loading Spinners
+            const summaryLoading = `<p class="text-center italic py-4 text-indigo-700"><svg class="animate-spin h-5 w-5 mr-2 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Sedang membuat rangkuman materi...</p>`;
+            const questionsLoading = `<div class="text-center py-4 text-orange-700"><svg class="animate-spin h-5 w-5 mr-3 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Sedang membuat 20 soal asesmen sumatif...</div>`;
+
+            let asesmenSumatifDetailPlaceholder = generateAsesmenDetail('sumatif', data.topik, data.materi, []); 
+            asesmenSumatifDetailPlaceholder = asesmenSumatifDetailPlaceholder.replace('<p class="text-sm mt-4 italic">Soal sedang dibuat...</p>', questionsLoading);
+
+            // 2. Tampilkan Output Awal (dengan Loading Spinners)
+            let outputHTML = generateFullOutputHTML(data, calculatedTimeString, meetingBreakdownHTML, displayDimensi, asesmenAwalDetail, asesmenProsesDetail, asesmenSumatifDetailPlaceholder, summaryLoading);
+
+            document.getElementById('plan-output').innerHTML = outputHTML;
+            document.getElementById('result-container').classList.remove('hidden');
+            document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
+            
+            // 3. Panggil API Calls Concurrently (Rangkuman dan Soal)
+            const [generatedSummaryMarkdown, generatedQuestions] = await Promise.all([
+                generateSummary(data.tujuan_pembelajaran),
+                generateQuestions(data.topik, data.materi)
+            ]);
+
+            // 4. Prepare Final Content
+            const finalSummary = generatedSummaryMarkdown ? markdownToHtml(generatedSummaryMarkdown) : '<p class="text-red-500 text-sm">Gagal menghasilkan rangkuman materi. Pastikan koneksi dan coba lagi.</p>';
+            const asesmenSumatifDetailFinal = generateAsesmenDetail('sumatif', data.topik, data.materi, generatedQuestions);
+
+            // 5. Rekonstruksi dan Tampilkan Output Akhir
+            outputHTML = generateFullOutputHTML(data, calculatedTimeString, meetingBreakdownHTML, displayDimensi, asesmenAwalDetail, asesmenProsesDetail, asesmenSumatifDetailFinal, finalSummary);
+
+            document.getElementById('plan-output').innerHTML = outputHTML;
+
+            // Reset tombol
+            document.getElementById('generate-button').disabled = false;
+            document.getElementById('generate-button-text').textContent = 'Buat Perencanaan Pembelajaran';
+        }
+
+        // =======================================================================
+        // VI. FUNGSI UNDUH WORD
+        // =======================================================================
+        window.downloadWord = function() { // Pastikan fungsi dapat diakses secara global
+            const content = document.getElementById('plan-output').innerHTML;
+            const topic = document.getElementById('topik').value.trim().replace(/\s/g, '_') || 'Draft_RPP';
+            const filename = `Perencanaan_Pembelajaran_${topic}.doc`;
+
+            // Konten HTML dengan tag MSO untuk kompatibilitas Word
+            const htmlContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset='utf-8'>
+                    <title>Perencanaan Pembelajaran</title>
+                    <style>
+                        /* Gaya dasar untuk kompatibilitas Word */
+                        body { font-family: 'Inter', sans-serif; }
+                        h1, h2, h3 { color: #374151; }
+                        .space-y-8 > div { margin-bottom: 24px; }
+                        /* Memastikan border dan warna dasar terbawa */
+                        .card { box-shadow: none; border: 1px solid #ccc; padding: 16px; margin-bottom: 16px; }
+                        .bg-indigo-50 { background-color: #f5f3ff !important; }
+                        .border-indigo-200 { border-color: #c7d2fe !important; }
+                        .border-indigo-300 { border-color: #a5b4fc !important; }
+                        .border-l-4 { border-left-width: 4px; border-left-style: solid; }
+                        .border-blue-600 { border-left-color: #2563eb !important; }
+                        .bg-blue-50 { background-color: #eff6ff !important; }
+                        .text-blue-700 { color: #1d4ed8 !important; }
+                        .shadow-xl { box-shadow: none; } 
+                        /* Mengatasi daftar berpoin/bernomor di Word */
+                        ul.list-decimal, ol.list-decimal { list-style-type: decimal; margin-left: 30pt; padding-left: 0; } 
+                        ul.list-disc { list-style-type: disc; margin-left: 30pt; padding-left: 0; }
+                    </style>
+                </head>
+                <body>
+                    ${content}
+                </body>
+                </html>
+            `;
+
+            // Konversi string HTML ke Blob
+            const blob = new Blob(['\ufeff', htmlContent], {
+                type: 'application/msword'
+            });
+
+            // Mendukung IE/Edge
+            if (window.navigator.msSaveOrOpenBlob) {
+                window.navigator.msSaveOrOpenBlob(blob, filename);
+            } else {
+                // Browser Modern
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        }
+    </script>
+</body>
+</html>
